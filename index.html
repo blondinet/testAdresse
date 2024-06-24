@@ -10,8 +10,64 @@
     
 </head>
 <body>
+    <div>
+        <p>
+            totototot
+        </p>
+    </div>
+    <script>
+        const CLIENT_ID = '477711767471-3qt79p2aevn10atmc1f4uphnugari3cc.apps.googleusercontent.com';
+        const API_KEY = 'AIzaSyB4S5S7VRi-iMnQv1qs8BeJFBCyOSdMu9k';
 
-    totototot
+        // // Array of API discovery doc URLs for APIs used by the app
+        // const DISCOVERY_DOCS = ["https://sheets.googleapis.com/v4/spreadsheets//"];
 
+        // Authorization scopes required by the API
+        const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+        // 
+
+        function initClient() {
+            gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                scope: SCOPES,
+            }).then(function () {
+                // Listen for sign-in state changes.
+                gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+
+                // Handle the initial sign-in state.
+                updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function updateSignInStatus(isSignedIn) {
+            if (isSignedIn) {
+                authorizeButton.style.display = 'none';
+                content.innerText = 'You are authorized.';
+            } else {
+                authorizeButton.style.display = 'block';
+                content.innerText = 'You are not authorized.';
+            }
+        }
+
+        function handleAuthClick(event) {
+            gapi.auth2.getAuthInstance().signIn();
+        }
+
+        function updateSheet() {
+            gapi.client.sheets.spreadsheets.values.update({
+                spreadsheetId: '1064561417',
+                range: 'Sheet1!J1',
+                valueInputOption: 'RAW',
+                values: [['Updated value']]
+            }).then(function(response) {
+                console.log('Update successful', response);
+            }, function(reason) {
+                console.error('Error: ' + reason.result.error.message);
+            });
+        }
+    </script>
 </body>
 </html>
